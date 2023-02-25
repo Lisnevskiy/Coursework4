@@ -10,3 +10,19 @@ class DirectorDAO:
 
     def get_one(self, did):
         return self.session.query(Director).get(did)
+
+    def create(self, data):
+        new_director = Director(**data)
+
+        self.session.add(new_director)
+        self.session.commit()
+
+    def update(self, director):
+        self.session.add(director)
+        self.session.commit()
+
+    def delete(self, did):
+        director = self.get_one(did)
+
+        self.session.delete(director)
+        self.session.commit()
