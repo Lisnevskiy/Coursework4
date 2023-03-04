@@ -12,7 +12,7 @@ class DirectorService:
         return self.dao.get_one(did)
 
     def create(self, data):
-        self.dao.create(data)
+        return self.dao.create(data)
 
     def update(self, did, data):
         director = self.get_one(did)

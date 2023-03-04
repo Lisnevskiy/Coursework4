@@ -21,7 +21,7 @@ class MovieService:
         return self.dao.get_by_year(year)
 
     def create(self, data):
-        self.dao.create(data)
+        return self.dao.create(data)
 
     def update(self, mid, data):
         movie = self.get_one(mid)

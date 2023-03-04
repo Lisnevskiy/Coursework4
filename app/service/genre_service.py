@@ -12,7 +12,7 @@ class GenreService:
         return self.dao.get_one(gid)
 
     def create(self, data):
-        self.dao.create(data)
+        return self.dao.create(data)
 
     def update(self, gid, data):
         genre = self.get_one(gid)
