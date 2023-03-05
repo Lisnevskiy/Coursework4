@@ -20,6 +20,11 @@ class MovieDAO:
     def get_by_year(self, year):
         return self.session.query(Movie).filter(Movie.year == year).all()
 
+    def get_by_page(self, page):
+        movies_limit = 12
+        movies_offset = (page - 1) * movies_limit
+        return self.session.query(Movie).limit(movies_limit).offset(movies_offset)
+
     def create(self, data):
         new_movie = Movie(**data)
 

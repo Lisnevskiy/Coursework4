@@ -19,6 +19,7 @@ class MovieView(Resource):
         director_id = request.args.get('director_id')
         genre_id = request.args.get('genre_id')
         year = request.args.get('year')
+        page = request.args.get('page', type=int)
 
         if genre_id:
             movies = movie_service.get_by_genre_id(genre_id)
@@ -38,6 +39,14 @@ class MovieView(Resource):
 
         if year:
             movies = movie_service.get_by_year(year)
+
+            if not movies:
+                return {'message': 'No movies found'}, 404
+
+            return movies_schema.dump(movies), 200
+
+        if page:
+            movies = movie_service.get_by_page(page)
 
             if not movies:
                 return {'message': 'No movies found'}, 404

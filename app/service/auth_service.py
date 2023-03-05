@@ -12,8 +12,8 @@ class AuthService:
     def __init__(self, user_service: UserService):
         self.user_service = user_service
 
-    def generate_tokens(self, username, password, is_refresh=False):
-        user = self.user_service.get_by_username(username)
+    def generate_tokens(self, email, password, is_refresh=False):
+        user = self.user_service.get_by_email(email)
 
         if user is None:
             raise abort(404)
@@ -23,8 +23,8 @@ class AuthService:
                 abort(400)
 
         data = {
-            "username": user.username,
-            "role": user.role
+            "email": user.email,
+            # "role": user.role
         }
 
         # 30 minutes for access_token
@@ -43,6 +43,6 @@ class AuthService:
 
     def approve_refresh_token(self, refresh_token):
         data = jwt.decode(jwt=refresh_token, key=JWT_SECRET, algorithms=[JWT_ALGO])
-        username = data.get("username")
+        email = data.get("email")
 
-        return self.generate_tokens(username, None, is_refresh=True)
+        return self.generate_tokens(email, None, is_refresh=True)

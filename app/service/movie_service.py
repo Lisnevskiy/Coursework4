@@ -20,6 +20,9 @@ class MovieService:
     def get_by_year(self, year):
         return self.dao.get_by_year(year)
 
+    def get_by_page(self, page):
+        return self.dao.get_by_page(page)
+
     def create(self, data):
         return self.dao.create(data)
 
