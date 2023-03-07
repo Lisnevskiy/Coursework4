@@ -16,46 +16,16 @@ movies_schema = MovieSchema(many=True)
 class MovieView(Resource):
     @auth_required
     def get(self):
-        director_id = request.args.get('director_id')
-        genre_id = request.args.get('genre_id')
-        year = request.args.get('year')
-        page = request.args.get('page', type=int)
+        data = request.args
 
-        if genre_id:
-            movies = movie_service.get_by_genre_id(genre_id)
+        movies = movie_service.get_all(data)
 
-            if not movies:
-                return {'message': 'No movies found'}, 404
+        movies = movies_schema.dump(movies)
 
-            return movies_schema.dump(movies), 200
+        if not movies:
+            return {'message': 'No movies found'}, 404
 
-        if director_id:
-            movies = movie_service.get_by_director_id(director_id)
-
-            if not movies:
-                return {'message': 'No movies found'}, 404
-
-            return movies_schema.dump(movies), 200
-
-        if year:
-            movies = movie_service.get_by_year(year)
-
-            if not movies:
-                return {'message': 'No movies found'}, 404
-
-            return movies_schema.dump(movies), 200
-
-        if page:
-            movies = movie_service.get_by_page(page)
-
-            if not movies:
-                return {'message': 'No movies found'}, 404
-
-            return movies_schema.dump(movies), 200
-
-        movies = movie_service.get_all()
-
-        return movies_schema.dump(movies), 200
+        return movies, 200
 
     @admin_required
     def post(self):
