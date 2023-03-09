@@ -5,6 +5,7 @@ import hmac
 from app.constants import PWD_HASH_SALT, PWD_HASH_ITERATIONS
 
 from app.dao.user_dao import UserDAO
+from app.helpers.decorators import user_required
 
 
 class UserService:
@@ -14,18 +15,15 @@ class UserService:
     def get_all(self):
         return self.dao.get_all()
 
+    @user_required
     def get_one(self, uid):
         return self.dao.get_one(uid)
-
-    def get_by_username(self, username):
-        return self.dao.get_by_username(username)
 
     def get_by_email(self, email):
         return self.dao.get_by_email(email)
 
     def create(self, data):
         data['password'] = self.make_user_password_hash(data['password'])
-
 
         return self.dao.create(data)
 
@@ -41,14 +39,26 @@ class UserService:
 
     def update_partial(self, uid, data):
         user = self.get_one(uid)
-        data['password'] = self.make_user_password_hash(data['password'])
 
-        if 'username' in data:
-            user.username = data.get("username")
+        if 'email' in data:
+            user.email = data.get("email")
         if 'password' in data:
+            data['password'] = self.make_user_password_hash(data['password'])
             user.password = data.get("password")
-        if 'role' in data:
-            user.role = data.get("role")
+        if 'name' in data:
+            user.name = data.get("name")
+        if 'surname' in data:
+            user.surname = data.get("surname")
+        if 'favorite_genre' in data:
+            user.favorite_genre = data.get("favorite_genre")
+
+        self.dao.update(user)
+
+    def update_password(self, uid, data):
+        user = self.get_one(uid)
+
+        if self.make_user_password_hash(data['password_1']) == user.password:
+            user.password = self.make_user_password_hash(data['password_2'])
 
         self.dao.update(user)
 

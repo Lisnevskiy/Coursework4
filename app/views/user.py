@@ -2,7 +2,7 @@ from flask import request
 from flask_restx import Resource, Namespace
 
 from app.dao.model.user import UserSchema
-from app.helpers.decorators import admin_required
+from app.helpers.decorators import admin_required, user_required
 from app.implemented import user_service
 
 users_ns = Namespace('users')
@@ -19,17 +19,18 @@ class UsersView(Resource):
 
         return users_schema.dump(all_users), 200
 
-    def post(self):
-        req_json = request.json
-
-        user = user_service.create(req_json)
-
-        return "", 201, {"location": f"/users/{user.id}"}
+    # def post(self):
+    #     req_json = request.json
+    #
+    #     user = user_service.create(req_json)
+    #
+    #     return "", 201, {"location": f"/users/{user.id}"}
 
 
 @users_ns.route('/<int:uid>')
 class UserView(Resource):
-    @admin_required
+    # @admin_required
+    # @user_required
     def get(self, uid):
         user = user_service.get_one(uid)
 
@@ -37,6 +38,18 @@ class UserView(Resource):
             return {"message": "User not found"}, 404
 
         return user_schema.dump(user), 200
+
+    # @user_required
+    def patch(self, uid):
+        reg_json = request.json
+
+        try:
+            user_service.update_partial(uid, reg_json)
+
+            return '', 204
+
+        except:
+            return {'message': 'User not found, or another error'}, 404
 
     def put(self, uid):
         reg_json = request.json
@@ -58,3 +71,13 @@ class UserView(Resource):
 
         except:
             return {'message': 'User not found, or another error'}, 404
+
+
+@users_ns.route('/<int:uid>/password')
+class UserPasswordView(Resource):
+    def put(self, uid):
+        reg_json = request.json
+
+        user_service.update_password(uid, reg_json)
+
+        return '', 204
