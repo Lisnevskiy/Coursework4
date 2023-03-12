@@ -13,24 +13,14 @@ users_schema = UserSchema(many=True)
 
 @users_ns.route('/')
 class UsersView(Resource):
-    @admin_required
     def get(self):
         all_users = user_service.get_all()
 
         return users_schema.dump(all_users), 200
 
-    # def post(self):
-    #     req_json = request.json
-    #
-    #     user = user_service.create(req_json)
-    #
-    #     return "", 201, {"location": f"/users/{user.id}"}
-
 
 @users_ns.route('/<int:uid>')
 class UserView(Resource):
-    # @admin_required
-    # @user_required
     def get(self, uid):
         user = user_service.get_one(uid)
 
@@ -39,7 +29,6 @@ class UserView(Resource):
 
         return user_schema.dump(user), 200
 
-    # @user_required
     def patch(self, uid):
         reg_json = request.json
 

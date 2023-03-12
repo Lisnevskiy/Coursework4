@@ -20,9 +20,6 @@ def movie_dao():
 
     movie_dao.get_all = MagicMock(return_value=[movie1, movie2, movie3])
     movie_dao.get_one = MagicMock(return_value=movie1)
-    movie_dao.get_by_director_id = MagicMock(return_value=[movie1, movie2])
-    movie_dao.get_by_genre_id = MagicMock(return_value=[movie1, movie2])
-    movie_dao.get_by_year = MagicMock(return_value=[movie1, movie2])
     movie_dao.create = MagicMock(return_value=Movie(id=3))
     movie_dao.update = MagicMock(return_value=Movie(id=3))
     movie_dao.update_partial = MagicMock(return_value=Movie(id=3))
@@ -37,7 +34,8 @@ class TestMovieService:
         self.movie_service = MovieService(dao=movie_dao)
 
     def test_get_all(self):
-        all_movies = self.movie_service.get_all()
+        data = {'status': 'new', 'page': 1}
+        all_movies = self.movie_service.get_all(data)
 
         assert len(all_movies) == 3, 'Неверное количество фильмов'
 
@@ -46,21 +44,6 @@ class TestMovieService:
 
         assert one_movie.id == 1, 'Неверный фильм'
         assert one_movie.title == 'movie1', 'Неверный фильм'
-
-    def test_get_by_director_id(self):
-        movies = self.movie_service.get_by_director_id(1)
-
-        assert len(movies) == 2, 'Неверное количество фильмов'
-
-    def test_get_by_genre_id(self):
-        movies = self.movie_service.get_by_director_id(1)
-
-        assert len(movies) == 2, 'Неверное количество фильмов'
-
-    def test_get_by_year(self):
-        movies = self.movie_service.get_by_director_id(1)
-
-        assert len(movies) == 2, 'Неверное количество фильмов'
 
     def test_create(self):
         data = {'name': 'movie4'}

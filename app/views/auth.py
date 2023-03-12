@@ -10,9 +10,13 @@ auth_bp = Blueprint('auth_bp', __name__)
 def create_user():
     reg_json = request.json
 
-    new_user = user_service.create(reg_json)
+    try:
+        new_user = user_service.create(reg_json)
 
-    return '', 201, {"location": f"/users/{new_user.id}"}
+        return '', 201, {"location": f"/users/{new_user.id}"}
+
+    except:
+        return {"message": "Error creating user"}, 400
 
 
 @auth_bp.post('/auth/login')
@@ -39,39 +43,3 @@ def update_tokens():
     tokens = auth_service.approve_refresh_token(token)
 
     return tokens, 201
-
-# from flask import request, abort
-# from flask_restx import Resource, Namespace
-#
-# from app.implemented import auth_service
-#
-#
-# auth_ns = Namespace('auth')
-#
-#
-# @auth_ns.route('/register')
-
-
-# @auth_ns.route('/')
-# class AuthView(Resource):
-#     def post(self):
-#         req_json = request.json
-#
-#         username = req_json.get("username", None)
-#         password = req_json.get("password", None)
-#
-#         if None in [username, password]:
-#             abort(400)
-#
-#         tokens = auth_service.generate_tokens(username, password)
-#
-#         return tokens, 201
-#
-#     def put(self):
-#         req_json = request.json
-#
-#         token = req_json.get("refresh_token")
-#
-#         tokens = auth_service.approve_refresh_token(token)
-#
-#         return tokens, 201

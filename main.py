@@ -29,7 +29,6 @@ def configure_app(application):
     api.add_namespace(directors_ns)
     api.add_namespace(genres_ns)
     api.add_namespace(users_ns)
-    # api.add_namespace(auth_ns)
 
     application.register_blueprint(errorhandler_bp)
     application.register_blueprint(auth_bp)
